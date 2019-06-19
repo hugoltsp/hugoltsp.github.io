@@ -3,12 +3,24 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://hugoltsp.github.io/categories/</loc>
+    <loc>https://hugoltsp.github.io/</loc>
+    <lastmod>2019-06-16T00:00:00-03:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://hugoltsp.github.io/</loc>
+    <loc>https://hugoltsp.github.io/posts/kotlin-collections/</loc>
+    <lastmod>2019-06-16T00:00:00-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hugoltsp.github.io/posts/</loc>
+    <lastmod>2019-06-16T00:00:00-03:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hugoltsp.github.io/categories/</loc>
     <priority>0</priority>
   </url>
   

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Hugo Leonardo Teles">
+    <meta name="description" content="Hugo&#39;s personal tech blog">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kotlin Collections and how it compares with Java Collections API"/>
+<meta name="twitter:description" content="Kotlin Collections and how it compares to Java"/>
+
+    <meta property="og:title" content="Kotlin Collections and how it compares with Java Collections API" />
+<meta property="og:description" content="Kotlin Collections and how it compares to Java" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugoltsp.github.io/posts/kotlin-collections/" />
+<meta property="article:published_time" content="2019-06-16T00:00:00-03:00"/>
+<meta property="article:modified_time" content="2019-06-16T00:00:00-03:00"/>
+
+
+    
+      <base href="https://hugoltsp.github.io/posts/kotlin-collections/">
+    
+    <title>
+  Kotlin Collections and how it compares with Java Collections API · Hugo Leonardo
+</title>
+
+    
+      <link rel="canonical" href="https://hugoltsp.github.io/posts/kotlin-collections/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://hugoltsp.github.io/css/coder.min.28d751104f30c16da1aa1bb04015cbe662cacfe0d1b01af4f2240ad58580069c.css" integrity="sha256-KNdREE8wwW2hqhuwQBXL5mLKz&#43;DRsBr08iQK1YWABpw=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+    
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.55.6" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://hugoltsp.github.io">
+      Hugo Leonardo
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Kotlin Collections and how it compares with Java Collections API</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2019-06-16T00:00:00-03:00'>
+                June 16, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              4 minutes read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+
+<p>We developers usually write software that uses collections on a daily basis, code that deals with things such as fetching a list of products from the database, writing a set of data to a file like CSV among other things are quite common. So let&rsquo;s take a look on how Kotlin Collections work and how do they compare to Java Collections API.</p>
+
+<h3 id="read-only-and-mutable-collections">Read-Only and Mutable collections</h3>
+
+<figure>
+    <img src="https://hugoltsp.github.io/images/collections-diagram.png"
+         alt="Overview of collections interfaces"/> <figcaption>
+            <p>Overview of collections interfaces</p>
+        </figcaption>
+</figure>
+
+
+<p>As you can see in this figure, Kotlin has a mutable counterpart which inherits and adds functions such as <code>fun add(element: E)</code> and <code>fun remove(element: E)</code> for every read-only interface. ArrayList, HashSet, LinkedHashSet, LinkedHashMap and HashMap classes are treated as implementations of MutableList, MutableSet and MutableMap respectively and they are very similar to the ones you find in Java Collections API, in fact, these are the same but marked as <code>typealias</code> by Kotlin, as seen in the <a href="https://github.com/JetBrains/kotlin/blob/v1.3.31/libraries/stdlib/jvm/src/kotlin/collections/TypeAliases.kt">TypeAliases.kt runtime library file:</a></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@SinceKotlin(<span style="font-style:italic">&#34;1.1&#34;</span>) <span style="font-weight:bold">public</span> <span style="font-weight:bold">actual</span> typealias ArrayList&lt;E&gt; = java.util.ArrayList&lt;E&gt;
+@SinceKotlin(<span style="font-style:italic">&#34;1.1&#34;</span>) <span style="font-weight:bold">public</span> <span style="font-weight:bold">actual</span> typealias LinkedHashMap&lt;K, V&gt; = java.util.LinkedHashMap&lt;K, V&gt;
+@SinceKotlin(<span style="font-style:italic">&#34;1.1&#34;</span>) <span style="font-weight:bold">public</span> <span style="font-weight:bold">actual</span> typealias HashMap&lt;K, V&gt; = java.util.HashMap&lt;K, V&gt;
+@SinceKotlin(<span style="font-style:italic">&#34;1.1&#34;</span>) <span style="font-weight:bold">public</span> <span style="font-weight:bold">actual</span> typealias LinkedHashSet&lt;E&gt; = java.util.LinkedHashSet&lt;E&gt;
+@SinceKotlin(<span style="font-style:italic">&#34;1.1&#34;</span>) <span style="font-weight:bold">public</span> <span style="font-weight:bold">actual</span> typealias HashSet&lt;E&gt; = java.util.HashSet&lt;E&gt;</code></pre></div>
+<h4 id="collections-creation-functions">Collections-creation functions</h4>
+
+<table>
+<thead>
+<tr>
+<th align="center">Type</th>
+<th align="center">Function</th>
+<th align="center">Mutability</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">List</td>
+<td align="center"><code>listOf()</code></td>
+<td align="center">Read-Only</td>
+</tr>
+
+<tr>
+<td align="center">MutableList</td>
+<td align="center"><code>arrayListOf()</code></td>
+<td align="center">Mutable</td>
+</tr>
+
+<tr>
+<td align="center">Set</td>
+<td align="center"><code>setOf()</code></td>
+<td align="center">Read-Only</td>
+</tr>
+
+<tr>
+<td align="center">MutableSet</td>
+<td align="center"><code>hashSetOf()</code></td>
+<td align="center">Mutable</td>
+</tr>
+
+<tr>
+<td align="center">Map</td>
+<td align="center"><code>mapOf()</code></td>
+<td align="center">Read-Only</td>
+</tr>
+
+<tr>
+<td align="center">MutableMap</td>
+<td align="center"><code>hashMapOf()</code></td>
+<td align="center">Mutable</td>
+</tr>
+</tbody>
+</table>
+
+<p>These are the top-level functions used to create collections in Kotlin, example:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="font-weight:bold">val</span> list = listOf(1, 2, 3)
+    <span style="font-weight:bold">val</span> mutableArrayList = arrayListOf(1, 2, 3)
+    <span style="font-weight:bold">val</span> map = mapOf(1 to <span style="font-style:italic">&#34;one&#34;</span>, 2 to <span style="font-style:italic">&#34;two&#34;</span>) <span style="font-style:italic">//key is an Int valued by a String
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">val</span> mutableHashMapOf = hashMapOf(1 to <span style="font-style:italic">&#34;one&#34;</span>, 2 to <span style="font-style:italic">&#34;two&#34;</span>)
+    <span style="font-weight:bold">val</span> set = setOf(1, 2, 3)
+    <span style="font-weight:bold">val</span> mutableHashSetOf = hashSetOf(1, 2, 3)</code></pre></div>
+<p>If we were to create an immutable List in Java, we would have to wrap our collection in another one like this:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    List&lt;String&gt; originalMutableList = <span style="font-weight:bold">new</span> ArrayList&lt;&gt;();
+    List&lt;String&gt; unmodifiableList = Collections.unmodifiableList(originalMutableList);
+    <span style="font-style:italic">// Collections.unmodifiableMap(...);
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// Collections.unmodifiableSet(...);
+</span><span style="font-style:italic"></span>    // and so on... </code></pre></div>
+<p>We still would have methods such as <code>add</code>, <code>remove</code> and <code>clear</code> tough, as it&rsquo;s part of the List interface and there&rsquo;s no such distinction between read-only and mutable lists in standard Java.</p>
+
+<h4 id="filter-map-flatmap-and-zip">Filter, map, flatMap and zip</h4>
+
+<h6 id="filter">Filter</h6>
+
+<p>Filtering lists in Kotlin is simple and looks very similar to the way we work with Java 8 Streams, Kotlin&rsquo;s Iterable interface has a method named filter that accepts a predicate in order to process the collection.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    
+    <span style="font-weight:bold">val</span> countries = listOf(<span style="font-style:italic">&#34;Brazil&#34;</span>, <span style="font-style:italic">&#34;Argentina&#34;</span>, <span style="font-style:italic">&#34;Germany&#34;</span>)
+    <span style="font-weight:bold">val</span> filteredCountries = countries.filter { it.length &gt; 6 } 
+    <span style="font-style:italic">//&#39;it&#39; means the instance itself, in that case a String representing a country name
+</span><span style="font-style:italic"></span>
+    println(filteredCountries) <span style="font-style:italic">// prints [Argentina, Germany] </span></code></pre></div>
+<h6 id="map-and-flatmap">Map and flatMap</h6>
+
+<p>Pretty much like filtering, Map and flatMap operations remain similar to the ones found in Java 8 when working with Streams.</p>
+
+<p>Map:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    
+    <span style="font-weight:bold">val</span> countries = listOf(<span style="font-style:italic">&#34;Brazil&#34;</span>, <span style="font-style:italic">&#34;Argentina&#34;</span>, <span style="font-style:italic">&#34;Germany&#34;</span>)
+    <span style="font-weight:bold">val</span> countriesToLowerCase = countries.map(String::toLowerCase) <span style="font-style:italic">//same as countries.map { it.toLowerCase() }
+</span><span style="font-style:italic"></span>
+    println(countriesToLowerCase) <span style="font-style:italic">//prints [brazil, argentina, germany]</span></code></pre></div>
+<p>flatMap:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    
+    <span style="font-weight:bold">val</span> countries = listOf(<span style="font-style:italic">&#34;Brazil&#34;</span>, <span style="font-style:italic">&#34;Argentina&#34;</span>, <span style="font-style:italic">&#34;Germany&#34;</span>)
+    <span style="font-weight:bold">val</span> listOfCharacters = countries.flatMap { it.toList() } <span style="font-style:italic">// converts to a List of chars
+</span><span style="font-style:italic"></span>
+    println(listOfCharacters) <span style="font-style:italic">// prints [B, r, a, z, i, l, A, r, g, e, n, t, i, n, a, G, e, r, m, a, n, y]</span></code></pre></div>
+<p>zip:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="font-weight:bold">val</span> countries = listOf(<span style="font-style:italic">&#34;Brazil&#34;</span>, <span style="font-style:italic">&#34;Argentina&#34;</span>, <span style="font-style:italic">&#34;Germany&#34;</span>)
+    <span style="font-weight:bold">val</span> cities = listOf(<span style="font-style:italic">&#34;Aracaju&#34;</span>, <span style="font-style:italic">&#34;Ushuaia&#34;</span>, <span style="font-style:italic">&#34;Berlin&#34;</span>)
+
+    <span style="font-weight:bold">val</span> zippedPairs = cities.zip(countries) <span style="font-style:italic">//creates a new list containing an order pair of the elements of these two lists
+</span><span style="font-style:italic"></span>
+    println(zippedPairs) <span style="font-style:italic">// prints [(Aracaju, Brazil), (Ushuaia, Argentina), (Berlin, Germany)]</span></code></pre></div>
+<p><strong>Please note that unlike Java 8 Streams, Kotlin Lists are eagerly evaluated, which means there&rsquo;s no need to use terminal methods such as collect(), forEach(), etc&hellip; to run intermediate operations.</strong></p>
+
+<h3 id="sequences">Sequences</h3>
+
+<p>Sequences are like lazily evaluated collections, which means that when we invoke functions such as filter and map to it, these will add intermediate steps to be executed when requested, that is, when a <em>terminal</em> function is called. Examples of terminal functions are <code>toList()</code>, <code>first()</code>, <code>sumBy()</code> and <code>max()</code>. Sequences are a good choice when the size of the collection is not known in advance, or when the collection is too large to be processed or kept in memory at once.</p>
+
+<p>Despite the similarities, I&rsquo;d favor Sequences over Streams as it offers a more idiomatic, homogeneous and cleaner code when working with Kotlin.
+Another important thing to keep in mind is that at the time of writing this article <a href="https://kotlinlang.org/docs/reference/faq.html#does-kotlin-only-target-java-6">Kotlin targets JDK 1.6+</a>, which means that if you are using Java 6 working with Sequences might be your only choice.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="font-weight:bold">val</span> cities = listOf(<span style="font-style:italic">&#34;Aracaju&#34;</span>, <span style="font-style:italic">&#34;Ushuaia&#34;</span>, <span style="font-style:italic">&#34;Berlin&#34;</span>)
+
+    <span style="font-weight:bold">val</span> sequence = cities.asSequence().filter { it.startsWith(<span style="font-style:italic">&#34;A&#34;</span>) }.map { it.toUpperCase() }
+
+    println(sequence.first()) <span style="font-style:italic">//prints ARACAJU</span></code></pre></div>
+<p>Kotlin is a pragmatic language created to solve real world problems, it aims to provide popular features that have proven to be successful. With collections, for instance, we have built-in well segregated components for both mutable and immutable concepts.</p>
+
+<p>Hope you enjoyed, thanks.</p>
+
+      </div>
+
+      <footer>
+        
+
+
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Welcome ;)</p>
+    
+     © 2019
+    
+       · 
+      Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>
