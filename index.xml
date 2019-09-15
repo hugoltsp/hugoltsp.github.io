@@ -6,10 +6,19 @@
     <description>Recent content on Hugo Leonardo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 16 Jun 2019 00:00:00 -0300</lastBuildDate>
+    <lastBuildDate>Sat, 24 Aug 2019 20:05:35 -0300</lastBuildDate>
     
 	<atom:link href="https://hugoltsp.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Apache Kafka Principles</title>
+      <link>https://hugoltsp.github.io/posts/kafka-principles/</link>
+      <pubDate>Sat, 24 Aug 2019 20:05:35 -0300</pubDate>
+      
+      <guid>https://hugoltsp.github.io/posts/kafka-principles/</guid>
+      <description>Apache Kafka is a high throughput distributed streaming system written in Scala and Java epominously named after the great novelist Franz Kafka. It can be used as a traditional messaging system in favor of JMS or AMQP and allows applications to publish/subscribe to data streams and any events (such as notifications etc) in a decoupled, real-time manner. In this post we&amp;rsquo;ll cover some key concepts and core architectural aspects of Kafka, along with some practical examples.</description>
+    </item>
     
     <item>
       <title>Kotlin Collections and how it compares with Java Collections API</title>

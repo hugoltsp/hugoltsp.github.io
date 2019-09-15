@@ -105,7 +105,12 @@
             </span>
           </div>
           
-          
+          <div class="tags">
+  <i class="fas fa-tag"></i>
+    <a href="https://hugoltsp.github.io/tags/kotlin/">Kotlin</a>
+      <span class="separator">•</span>
+    <a href="https://hugoltsp.github.io/tags/java/">Java</a></div>
+
         </div>
       </header>
 
@@ -226,7 +231,7 @@
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="font-weight:bold">val</span> countries = listOf(<span style="font-style:italic">&#34;Brazil&#34;</span>, <span style="font-style:italic">&#34;Argentina&#34;</span>, <span style="font-style:italic">&#34;Germany&#34;</span>)
     <span style="font-weight:bold">val</span> cities = listOf(<span style="font-style:italic">&#34;Aracaju&#34;</span>, <span style="font-style:italic">&#34;Ushuaia&#34;</span>, <span style="font-style:italic">&#34;Berlin&#34;</span>)
 
-    <span style="font-weight:bold">val</span> zippedPairs = cities.zip(countries) <span style="font-style:italic">//creates a new list containing an order pair of the elements of these two lists
+    <span style="font-weight:bold">val</span> zippedPairs = cities.zip(countries) <span style="font-style:italic">//creates a new list containing an ordered pair of the elements of these two lists
 </span><span style="font-style:italic"></span>
     println(zippedPairs) <span style="font-style:italic">// prints [(Aracaju, Brazil), (Ushuaia, Argentina), (Berlin, Germany)]</span></code></pre></div>
 <p><strong>Please note that unlike Java 8 Streams, Kotlin Lists are eagerly evaluated, which means there&rsquo;s no need to use terminal methods such as collect(), forEach(), etc&hellip; to run intermediate operations.</strong></p>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Hugo Leonardo Teles">
+    <meta name="description" content="Hugo&#39;s personal tech blog">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Apache Kafka Principles"/>
+<meta name="twitter:description" content="Kafka Messaging principles, and Java examples"/>
+
+    <meta property="og:title" content="Apache Kafka Principles" />
+<meta property="og:description" content="Kafka Messaging principles, and Java examples" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugoltsp.github.io/posts/kafka-principles/" />
+<meta property="article:published_time" content="2019-08-24T20:05:35-03:00"/>
+<meta property="article:modified_time" content="2019-08-24T20:05:35-03:00"/>
+
+
+    
+      <base href="https://hugoltsp.github.io/posts/kafka-principles/">
+    
+    <title>
+  Apache Kafka Principles · Hugo Leonardo
+</title>
+
+    
+      <link rel="canonical" href="https://hugoltsp.github.io/posts/kafka-principles/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://hugoltsp.github.io/css/coder.min.28d751104f30c16da1aa1bb04015cbe662cacfe0d1b01af4f2240ad58580069c.css" integrity="sha256-KNdREE8wwW2hqhuwQBXL5mLKz&#43;DRsBr08iQK1YWABpw=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+    
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.55.6" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://hugoltsp.github.io">
+      Hugo Leonardo
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Apache Kafka Principles</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2019-08-24T20:05:35-03:00'>
+                August 24, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              5 minutes read
+            </span>
+          </div>
+          
+          <div class="tags">
+  <i class="fas fa-tag"></i>
+    <a href="https://hugoltsp.github.io/tags/kafka/">Kafka</a>
+      <span class="separator">•</span>
+    <a href="https://hugoltsp.github.io/tags/java/">Java</a></div>
+
+        </div>
+      </header>
+
+      <div>
+        
+
+<p>Apache Kafka is a high throughput distributed streaming system written in Scala and Java epominously named after the great novelist <a href="https://en.wikipedia.org/wiki/Franz_Kafka">Franz Kafka</a>. It can be used as a traditional messaging system in favor of <a href="https://en.wikipedia.org/wiki/Java_Message_Service">JMS</a> or <a href="https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol">AMQP</a> and allows applications to publish/subscribe to data streams and any events (such as notifications etc) in a decoupled, real-time manner. In this post we&rsquo;ll cover some key concepts and core architectural aspects of Kafka, along with some practical examples.</p>
+
+<h1 id="key-concepts">Key Concepts</h1>
+
+<h4 id="zookeeper">Zookeeper</h4>
+
+<p>Zookeeper is a distributed service used in a myriad of use cases, including configuration management, synchronization between services, leader election, message queues, and also as a naming service. Kafka relies on Zookeeper to manage running brokers in a cluster, it does things like electing a new partition leader in case a current partition leader broker goes down.</p>
+
+<h6 id="starting-zookeeper">Starting Zookeeper</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./zookeeper-server-start.sh ../config/zookeeper.properties</pre></div>
+<h4 id="brokers">Brokers</h4>
+
+<p>A broker is a running instance of Kafka, it is identified by a unique numeric id in the cluster which can be changed in the <code>broker.id</code> configuration property.</p>
+
+<h6 id="starting-kafka">Starting Kafka</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./kafka-server-start.sh ../config/server.properties</pre></div>
+<h4 id="messages">Messages</h4>
+
+<p>Messages are one of the main elements in Kafka, they are published into Topics and are basically immutable data consisting of key/value pairs on which the optional key is used to guarantee message ordering. If you specify a key, Kafka deterministically maps your message to a specific partition based on its hash (similar to Rendezvous hashing algorithm), which is very useful if you need to read or replay data at some point in a ordered way.</p>
+
+<h4 id="topics">Topics</h4>
+
+<p>A Topic is a logical group, or category on which messages are published, it can be named as something like <code>PUSH_NOTIFICATIONS</code> or <code>driverLocation</code> for instance. By default, Kafka will automatically create a new topic with one partition and a replication factor of 1 when you send a message to a non-existing topic, which might not be desirable in most cases, to disable this behavior you can set the property <code>auto.create.topics.enable</code> to false.</p>
+
+<h6 id="creating-a-topic">Creating a topic</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./kafka-topics.sh --create --bootstrap-server=localhost:9092 --topic myFirstTopic --partitions=1 --replication-factor=1</pre></div>
+<p><strong>&ndash;topic</strong> specifies the name of our topic, in this case, myFirstTopic;</p>
+
+<p><strong>&ndash;bootstrap-server</strong> points to running Kafka nodes;</p>
+
+<p><strong>&ndash;partitions</strong> sets the number of available partitions for our topic;</p>
+
+<p><strong>&ndash;replication-factor</strong> configures the number of nodes on which our partitions will live, it can&rsquo;t be higher than the number of available brokers in our cluster.</p>
+
+<h4 id="partitions">Partitions</h4>
+
+<p>In Kafka every topic has a configurable number of partitions, a partition contains messages from a single topic, it exists inside a broker and can be replicated across the cluster, thus enabling fault tolerance and parallel processing in that it distributes messages across all other nodes. By default messages have a duration of 7 days as seen in the following broker configuration <code>log.retention.hours=168</code></p>
+
+<h4 id="offsets">Offsets</h4>
+
+<p>The offset is a sequential number that identifies data location within a single partition.</p>
+
+<figure>
+    <img src="https://hugoltsp.github.io/images/kafka-architecture-topic-partition-layout-offsets.png"
+         alt="Partitions and Offsets described [source]"/> <figcaption>
+            <p>Partitions and Offsets described <a href="http://cloudurable.com/blog/kafka-architecture-topics/index.html">[source]</a></p>
+        </figcaption>
+</figure>
+
+
+<h5 id="partition-leaders-and-in-sync-replicas-isr">Partition Leaders and In-Sync Replicas (ISR)</h5>
+
+<p>Every partition has one elected broker that works as the partition leader, leaders handle message I/O for a given partition and it replicates written data to in-sync replicas. In-sync replicas follow the partition leader, if the current leader goes down and stops sending heartbeats to Zookeepter its partition leadership is shared and assigned among other eligile ISR&rsquo;s.</p>
+
+<h5 id="topic-replication">Topic Replication</h5>
+
+<p>Now let&rsquo;s imagine we have 4 brokers in our cluster identified as 111, 222, 333 and 444 respectively, and we have created a topic named <code>REPLICATED_TOPIC</code> which is very similar to <code>myFirstTopic</code>, except it has 4 partitions and a replication factor of 4.</p>
+
+<p>To inspect this topic and find out more details about it we can run the following command:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./kafka-topics.sh --bootstrap-server=localhost:9092 --topic REPLICATED_TOPIC --describe</pre></div>
+<figure>
+    <img src="https://hugoltsp.github.io/images/replicas-1.png"
+         alt="Replication info on &amp;lsquo;REPLICATED_TOPIC&amp;rsquo; topic."/> <figcaption>
+            <p>Replication info on &lsquo;REPLICATED_TOPIC&rsquo; topic.</p>
+        </figcaption>
+</figure>
+
+
+<p>As we can see in this image, each one of our partitions has a broker assigned as leader, partition 3 for instance has broker 111 as it&rsquo;s leader. Now lets shutdown broker 111 and see what happens.</p>
+
+<figure>
+    <img src="https://hugoltsp.github.io/images/replicas-2.png"
+         alt="Partition 3 has a new leader."/> <figcaption>
+            <p>Partition 3 has a new leader.</p>
+        </figcaption>
+</figure>
+
+
+<p>Partition 3 leadership has been assigned to broker 333, and it now leads two partitions.</p>
+
+<h1 id="core-apis">Core APIs</h1>
+
+<h4 id="producer-api">Producer API</h4>
+
+<p>Producer API is responsible to send data to topics and specific partitions through message keys, getting to choose the right key is very important to consistently maintain message ordering.</p>
+
+<h4 id="acknowledgement">Acknowledgement</h4>
+
+<p><strong>&ndash;acks=1</strong> This is the default configuration, records will be considered successfully sent when the partition leader receives them.</p>
+
+<p><strong>&ndash;acks=-1</strong> Records will be considered successfully sent when the partition leader receives the data and replicates it across all other replicas. This configuration offers the best delivery guarantee, as it waits for the full set of replicas to receive the record.</p>
+
+<p><strong>&ndash;acks=0</strong> When set to zero the producer won&rsquo;t wait for any acknowledgment from brokers at all, which means the message will be considered sent as soon as it has been dispatched by the Producer API, this configuration might be insteresting in cases where you are concerned about performance and can afford to lose some data in the process.</p>
+
+<h6 id="cli-producer">CLI Producer</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./kafka-console-producer.sh --broker-list localhost:9092 --topic HELLO-WORLD --request-required-acks 1</pre></div>
+<h6 id="java-producer">Java Producer</h6>
+
+<p>Simple Java Producer using Spring.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="font-weight:bold">public</span> &lt;T&gt; <span style="">void</span> send(String topic, String key, T payload) {
+        kafkaTemplate.send(topic, key, payload)
+            .addCallback(<span style="font-weight:bold">this</span>::onSuccess, <span style="font-weight:bold">this</span>::onFailure);
+    }
+
+    <span style="font-weight:bold">private</span> &lt;T&gt; <span style="">void</span> onSuccess(SendResult&lt;String, T&gt; result) {
+        var recordMetadata = result.getRecordMetadata();
+        var producerRecord = result.getProducerRecord();
+
+        log.info(<span style="font-style:italic">&#34;Successfully sent data: [{}] to topic: [{}] | partition: [{}] | offset: [{}]&#34;</span>, producerRecord.value(),
+                recordMetadata.topic(),
+                recordMetadata.partition(),
+                recordMetadata.offset());
+    }
+
+    <span style="font-weight:bold">private</span> <span style="">void</span> onFailure(Throwable t) {
+        log.error(<span style="font-style:italic">&#34;Error&#34;</span>, t);
+    }</code></pre></div>
+<h4 id="consumer-api">Consumer API</h4>
+
+<p>A Consumer is used to read data from a single topic, it reads data in parallel acording to the number of partitions.
+Consumers are organized in Consumer Groups, every group has assigned one or more partitions to the topic the consumer subscribed to, in this way consumers from a group can consume messages only from their designated partitions. In Kafka when a message is consumed it is not removed, instead the consumer mantains the offset of the records it has already read through a special Topic called <code>__consumer_offsets</code> which stores info about commited offsets from topics and partitions per consumer group.</p>
+
+<figure>
+    <img src="https://hugoltsp.github.io/images/consumer-groups.png"/> 
+</figure>
+
+
+<h6 id="cli-consumer">CLI Consumer</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$./kafka-console-consumer.sh --bootstrap-server=localhost:9092 --topic=CHARACTERS</pre></div>
+<figure>
+    <img src="https://hugoltsp.github.io/images/consumer-output.png"
+         alt="Running this command might result in an output like this."/> <figcaption>
+            <p>Running this command might result in an output like this.</p>
+        </figcaption>
+</figure>
+
+
+<h6 id="java-consumer">Java Consumer</h6>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    @KafkaListener(topics = <span style="font-style:italic">&#34;CHARACTERS&#34;</span>)
+    <span style="font-weight:bold">public</span> <span style="">void</span> consume(ConsumerRecord&lt;String, ?&gt; record) {
+        log.info(<span style="font-style:italic">&#34;Received Data [{}]&#34;</span>, record.value());
+    }
+
+    <span style="font-style:italic">//... manually commiting records
+</span><span style="font-style:italic"></span>
+    @KafkaListener(topics = <span style="font-style:italic">&#34;E-SPORTS&#34;</span>)
+    <span style="font-weight:bold">public</span> <span style="">void</span> onMessage(ConsumerRecord&lt;String, String&gt; data, Acknowledgment acknowledgment) {
+        var game = data.value();
+
+        <span style="font-weight:bold">if</span> (shouldAcknowledge(game)) {
+            log.info(game);
+            acknowledgment.acknowledge();
+        } <span style="font-weight:bold">else</span> {
+            log.info(<span style="font-style:italic">&#34;Not acknowledged: {}&#34;</span>, game);
+        }
+
+    }</code></pre></div>
+<p>Source code from this post can be found in <a href="https://github.com/hugoltsp/kafka-blog-samples">Github</a>.</p>
+
+      </div>
+
+      <footer>
+        
+
+
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Welcome ;)</p>
+    
+     © 2019
+    
+       · 
+      Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Hugo Leonardo</title>
-    <link>https://hugoltsp.github.io/posts/</link>
-    <description>Recent content in Posts on Hugo Leonardo</description>
+    <title>Java on Hugo Leonardo</title>
+    <link>https://hugoltsp.github.io/tags/java/</link>
+    <description>Recent content in Java on Hugo Leonardo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 24 Aug 2019 20:05:35 -0300</lastBuildDate>
     
-	<atom:link href="https://hugoltsp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://hugoltsp.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
