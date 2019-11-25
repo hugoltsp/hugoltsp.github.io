@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Hugo Leonardo Teles">
+    <meta name="description" content="Hugo&#39;s personal tech blog">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Internal DSL&#39;s and Kotlin"/>
+<meta name="twitter:description" content="Using Kotlin features to design elegant and simple DSL&#39;s"/>
+
+    <meta property="og:title" content="Internal DSL&#39;s and Kotlin" />
+<meta property="og:description" content="Using Kotlin features to design elegant and simple DSL&#39;s" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugoltsp.github.io/posts/kotlin-dsl/" />
+<meta property="article:published_time" content="2019-10-08T00:00:00-03:00"/>
+<meta property="article:modified_time" content="2019-10-08T00:00:00-03:00"/>
+
+
+    
+      <base href="https://hugoltsp.github.io/posts/kotlin-dsl/">
+    
+    <title>
+  Internal DSL&#39;s and Kotlin · Hugo Leonardo
+</title>
+
+    
+      <link rel="canonical" href="https://hugoltsp.github.io/posts/kotlin-dsl/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://hugoltsp.github.io/css/coder.min.28d751104f30c16da1aa1bb04015cbe662cacfe0d1b01af4f2240ad58580069c.css" integrity="sha256-KNdREE8wwW2hqhuwQBXL5mLKz&#43;DRsBr08iQK1YWABpw=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+    
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.55.6" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://hugoltsp.github.io/">
+      Hugo Leonardo
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Internal DSL&#39;s and Kotlin</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2019-10-08T00:00:00-03:00'>
+                October 8, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              4 minutes read
+            </span>
+          </div>
+          
+          <div class="tags">
+  <i class="fas fa-tag"></i>
+    <a href="https://hugoltsp.github.io/tags/kotlin/">Kotlin</a></div>
+
+        </div>
+      </header>
+
+      <div>
+        
+
+<p>It&rsquo;s safe to claim that programming languages, in a very broad sense, can be regarded as means to solve a myriad of problems, but sometimes it feels like some commom issues are more specific than others, and that&rsquo;s where a DSL fits in as it concerns about addressing problems for a specific domain with simple and human readable code.</p>
+
+<h4 id="external-and-internal-dsl-s">External and Internal DSL&rsquo;s</h4>
+
+<p>External DSL&rsquo;s have their own syntax and can be run independently, for instance SQL for relational data manipulation, <a href="https://cucumber.io/docs/gherkin/reference/">Gherkin</a> for testing and HTML for web development are considered to be external DSL&rsquo;s. Internal DSL&rsquo;s on the other hand are written on top of general purpose languages; examples include Spring Security configuration &amp; <a href="https://github.com/JetBrains/Exposed">Exposed</a>, <a href="https://mybatis.org/mybatis-3/">MyBatis</a> and <a href="https://www.jooq.org/">jOOQ</a> support for working with SQL fluently. This topic focuses on internal DSL&rsquo;s and how these can be written in Kotlin with a readable and clean syntax.</p>
+
+<p>A simple Kotlin DSL can look like this:</p>
+
+<!-- <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"> --&gt;
+<span style="font-weight:bold">val</span> settings = settings {
+    secretKey = <span style="font-style:italic">&#34;mySecretKey&#34;</span>
+    publicResources {
+        publicResource {
+            method = <span style="font-style:italic">&#34;GET&#34;</span>
+            urls = <span style="font-style:italic">&#34;/public,/test&#34;</span>
+        }
+        publicResource {
+            method = <span style="font-style:italic">&#34;POST&#34;</span>
+            urls = <span style="font-style:italic">&#34;/user&#34;</span>
+        }
+    }
+}
+&lt;!-- </code></pre></td></tr></table>
+</div>
+</div>  -->
+
+<h3 id="higher-order-functions">Higher-order functions</h3>
+
+<p>High-order functions are similar to their regular counterpart except that they can take one or more functions as arguments or return a function, it is also worth noting that in Kotlin functions are first-class, which means they can be stored and assigned as a variable and as such passed as a regular parameter. This is a very important concept since we rely on passing lambda expressions as parameters when creating our DSL&rsquo;s and so on.</p>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="display:block;width:100%;background-color:#e5e5e5"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="font-weight:bold">fun</span> sum(a: Int, b: Int) = a + b
+<span style="font-weight:bold">val</span> sum: (Int, Int) -&gt; Int = { a: Int, b: Int -&gt; a + b }
+<span style="font-weight:bold">fun</span> fold(values: List&lt;Int&gt;, op: (a: Int, b: Int) -&gt; Int) = values.reduce(op)
+
+<span style="font-weight:bold">fun</span> main() {
+    fold(listOf(10, 14), ::sum)
+<span style="display:block;width:100%;background-color:#e5e5e5">    fold(listOf(10, 14)) { a, b -&gt; a + b } <span style="font-style:italic">//lambda outside of parentheses
+</span></span><span style="font-style:italic"></span>    fold(listOf(10, 14), sum)
+}</code></pre></td></tr></table>
+</div>
+</div>
+
+<h3 id="lambdas-outside-of-parentheses">Lambdas outside of parentheses</h3>
+
+<p>This feature allows us to write lambda expressions outside of parentheses, thus making such DSL syntax possible, if you take a look at the previous code snippet you can see that we already applied this.
+It is valid to use this kind of syntax when the last argument of your function expects a lambda, and if that is your function single argument you can skip the parentheses altogether, which means that if our function <code>fold</code> from the aforementioned snippet where to receive a single lambda we could do something like in the following example:</p>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="font-weight:bold">fun</span> fold(op: (a: Int, b: Int) -&gt; Int) = (0..10_000).reduce(op)
+
+<span style="font-weight:bold">fun</span> main() {
+    fold { a, b -&gt; a + b }
+}</code></pre></td></tr></table>
+</div>
+</div>
+
+<h3 id="lambdas-lambdas-with-receivers">Lambdas &amp; lambdas with receivers</h3>
+
+<p>Now let&rsquo;s take a look at a simple function that receives a lambda as parameter:</p>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="font-weight:bold">fun</span> settings(block: (JwtAuthenticationSettingsBuilder) -&gt; Unit) = JwtAuthenticationSettingsBuilder()
+        .apply(block)
+        .build()
+
+<span style="font-weight:bold">val</span> s = settings {
+    it.secretKey = <span style="font-style:italic">&#34;mySecretKey&#34;</span>
+    <span style="font-style:italic">//...
+</span><span style="font-style:italic"></span>}</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Even though this syntax looks clean and concise it requires the use of the <code>it</code> prefix inside the lambda in order to refer to the underlying attributes, to further improve readability and cast aside the need of the redundant <code>it</code> identifier we can refactor our <code>settings()</code> function to work with a lambda with receivers, this will allow access to our DSL attributes directly.</p>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="font-weight:bold">fun</span> settings(block: JwtAuthenticationSettingsBuilder.() -&gt; Unit) = JwtAuthenticationSettingsBuilder()
+        .apply(block)
+        .build()</code></pre></td></tr></table>
+</div>
+</div>
+
+<h4 id="receivers">Receivers</h4>
+
+<p>If you take a look at the previous examples you&rsquo;ll notice that we dropped the usage of <code>(JwtAuthenticationSettingsBuilder) -&gt; Unit</code> in favor of <code>JwtAuthenticationSettingsBuilder.() -&gt; Unit</code>, this way turning our ordinary lamba into a lamba with receiver, in this case the receiver type is identifier before <code>.()</code>, and it&rsquo;s basically the type on which we are trying to access members without an explicit qualifier, this is very similar to the concept of extension functions.</p>
+
+<figure>
+    <img src="https://hugoltsp.github.io/images/kotlin-extension-function.jpg"
+         alt="Receiver Types [source]"/> <figcaption>
+            <p>Receiver Types <a href="https://www.programiz.com/kotlin-programming/extension-functions">[source]</a></p>
+        </figcaption>
+</figure>
+
+
+<h3 id="type-safe-builders">Type-safe builders</h3>
+
+<p>When our DSL&rsquo;s have more complex types such as lists, maps or objects from user defined classes we can make use of builders to help writing and using our DSL&rsquo;s.</p>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@DslMarker
+<span style="font-weight:bold">private</span> <span style="font-weight:bold">annotation</span> <span style="font-weight:bold">class</span> <span style="font-weight:bold">JwtSettingsDsl</span>
+...
+@JwtSettingsDsl
+<span style="font-weight:bold">class</span> <span style="font-weight:bold">PublicResources</span> : ArrayList&lt;PublicResource&gt;() {
+
+    <span style="font-weight:bold">fun</span> publicResource(block: PublicResourceBuilder.() -&gt; Unit) = add(PublicResourceBuilder().apply(block).build())
+
+}
+
+@JwtSettingsDsl
+<span style="font-weight:bold">class</span> <span style="font-weight:bold">PublicResourceBuilder</span> {
+
+    <span style="font-weight:bold">var</span> method: String? = <span style="font-weight:bold">null</span>
+    <span style="font-weight:bold">lateinit</span> <span style="font-weight:bold">var</span> urls: String
+
+    <span style="font-weight:bold">fun</span> build() = PublicResource().apply {
+        method = <span style="font-weight:bold">this</span>@PublicResourceBuilder.method.let(HttpMethod::resolve)
+        urls = <span style="font-weight:bold">this</span>@PublicResourceBuilder.urls.split(<span style="font-style:italic">&#34;,&#34;</span>).map(String::trim)
+    }
+
+}</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>In this example we have <code>PublicResourceBuilder</code> which is responsible to build our <code>PublicResource</code> objects, <code>PublicResources</code> collects <code>PublicResourceBuilder</code> instances to a list. <code>@DslMarker</code> is used to narrow the scope of our receivers and prevent then from accessing data from outer lambdas.</p>
+
+<p>Thanks :)</p>
+
+<p>Sources:</p>
+
+<p><a href="https://martinfowler.com/books/dsl.html">https://martinfowler.com/books/dsl.html</a></p>
+
+<p><a href="https://www.manning.com/books/kotlin-in-action">https://www.manning.com/books/kotlin-in-action</a></p>
+
+      </div>
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Welcome ;)</p>
+    
+     © 2019
+    
+       · 
+      Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

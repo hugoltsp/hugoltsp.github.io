@@ -6,10 +6,20 @@
     <description>Recent content on Hugo Leonardo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 24 Aug 2019 20:05:35 -0300</lastBuildDate>
+    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 -0300</lastBuildDate>
     
 	<atom:link href="https://hugoltsp.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Internal DSL&#39;s and Kotlin</title>
+      <link>https://hugoltsp.github.io/posts/kotlin-dsl/</link>
+      <pubDate>Tue, 08 Oct 2019 00:00:00 -0300</pubDate>
+      
+      <guid>https://hugoltsp.github.io/posts/kotlin-dsl/</guid>
+      <description>It&amp;rsquo;s safe to claim that programming languages, in a very broad sense, can be regarded as means to solve a myriad of problems, but sometimes it feels like some commom issues are more specific than others, and that&amp;rsquo;s where a DSL fits in as it concerns about addressing problems for a specific domain with simple and human readable code.
+External and Internal DSL&amp;rsquo;s External DSL&amp;rsquo;s have their own syntax and can be run independently, for instance SQL for relational data manipulation, Gherkin for testing and HTML for web development are considered to be external DSL&amp;rsquo;s.</description>
+    </item>
     
     <item>
       <title>Apache Kafka Principles</title>
