@@ -17,7 +17,7 @@
       <pubDate>Tue, 08 Oct 2019 00:00:00 -0300</pubDate>
       
       <guid>https://hugoltsp.github.io/posts/kotlin-dsl/</guid>
-      <description>It&amp;rsquo;s safe to claim that programming languages, in a very broad sense, could be regarded as means to solve a myriad of problems, however sometimes it feels like some common issues are more specific than others, and that&amp;rsquo;s where a DSL fits in as it concerns about addressing problems for a specific domain with simple and human readable code.
+      <description>It&amp;rsquo;s safe to claim that programming languages, in a very broad sense, could be regarded as means to solve a myriad of problems, however sometimes it feels like some common issues are more specific than others, and that&amp;rsquo;s where a DSL fits in as it concerns addressing problems from a specific domain with simple and human readable code.
 External and Internal DSL&amp;rsquo;s External DSL&amp;rsquo;s have their own syntax and can be run independently, for instance SQL for relational data manipulation, Gherkin for testing and HTML for web development are considered external DSL&amp;rsquo;s.</description>
     </item>
     
