@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Kotlin on Hugo Leonardo</title>
@@ -6,11 +6,7 @@
     <description>Recent content in Kotlin on Hugo Leonardo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 -0300</lastBuildDate>
-    
-	<atom:link href="https://hugoltsp.github.io/tags/kotlin/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 -0300</lastBuildDate><atom:link href="https://hugoltsp.github.io/tags/kotlin/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Internal DSL&#39;s and Kotlin</title>
       <link>https://hugoltsp.github.io/posts/kotlin-dsl/</link>
@@ -28,7 +24,7 @@ External and Internal DSL&amp;rsquo;s External DSL&amp;rsquo;s have their own sy
       
       <guid>https://hugoltsp.github.io/posts/kotlin-collections/</guid>
       <description>We developers usually write software that uses collections on a daily basis, code that deals with things such as fetching a list of products from the database, writing a set of data to a file like CSV among other things are quite common. So let&amp;rsquo;s take a look on how Kotlin Collections work and how do they compare to Java Collections API.
-Read-Only and Mutable collections   Overview of collections interfaces</description>
+Read-Only and Mutable collections  Overview of collections interfaces</description>
     </item>
     
   </channel>

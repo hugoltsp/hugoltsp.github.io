@@ -1,61 +1,37 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://hugoltsp.github.io/</loc>
-    <lastmod>2019-10-08T00:00:00-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+    <lastmod>2021-07-07T12:41:07-03:00</lastmod>
+  </url><url>
+    <loc>https://hugoltsp.github.io/posts/localstack/</loc>
+    <lastmod>2021-07-07T12:41:07-03:00</lastmod>
+  </url><url>
+    <loc>https://hugoltsp.github.io/posts/</loc>
+    <lastmod>2021-07-07T12:41:07-03:00</lastmod>
+  </url><url>
     <loc>https://hugoltsp.github.io/posts/kotlin-dsl/</loc>
     <lastmod>2019-10-08T00:00:00-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/tags/kotlin/</loc>
     <lastmod>2019-10-08T00:00:00-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://hugoltsp.github.io/posts/</loc>
-    <lastmod>2019-10-08T00:00:00-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/tags/</loc>
     <lastmod>2019-10-08T00:00:00-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/posts/kafka-principles/</loc>
     <lastmod>2019-08-24T20:05:35-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/tags/java/</loc>
     <lastmod>2019-08-24T20:05:35-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/tags/kafka/</loc>
     <lastmod>2019-08-24T20:05:35-03:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/posts/kotlin-collections/</loc>
     <lastmod>2019-06-16T00:00:00-03:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://hugoltsp.github.io/categories/</loc>
-    <priority>0</priority>
   </url>
-  
 </urlset>

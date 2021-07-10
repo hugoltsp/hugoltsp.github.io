@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Hugo Leonardo</title>
@@ -6,10 +6,15 @@
     <description>Recent content in Posts on Hugo Leonardo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 -0300</lastBuildDate>
-    
-	<atom:link href="https://hugoltsp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Wed, 07 Jul 2021 12:41:07 -0300</lastBuildDate><atom:link href="https://hugoltsp.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mocking a AWS environment with LocalStack</title>
+      <link>https://hugoltsp.github.io/posts/localstack/</link>
+      <pubDate>Wed, 07 Jul 2021 12:41:07 -0300</pubDate>
+      
+      <guid>https://hugoltsp.github.io/posts/localstack/</guid>
+      <description>When building cloud applications with AWS, we go through many vendor specific services such as S3, SQS, KMS and DynamoDB as well as many others, and for those to work properly we need credentials, IAM permissions and such, so it basically entails using your production environment or even building another one from the ground up, which sometimes is neither cheap or easy, one might lack the skills to do such thing or simply doesn&amp;rsquo;t have resources to do this on their own, not to mention that competing the same services and objects with others might be a nuisance (think of shared SNS topics or SQS queues, for example).</description>
+    </item>
     
     <item>
       <title>Internal DSL&#39;s and Kotlin</title>
@@ -37,7 +42,7 @@ External and Internal DSL&amp;rsquo;s External DSL&amp;rsquo;s have their own sy
       
       <guid>https://hugoltsp.github.io/posts/kotlin-collections/</guid>
       <description>We developers usually write software that uses collections on a daily basis, code that deals with things such as fetching a list of products from the database, writing a set of data to a file like CSV among other things are quite common. So let&amp;rsquo;s take a look on how Kotlin Collections work and how do they compare to Java Collections API.
-Read-Only and Mutable collections   Overview of collections interfaces</description>
+Read-Only and Mutable collections  Overview of collections interfaces</description>
     </item>
     
   </channel>

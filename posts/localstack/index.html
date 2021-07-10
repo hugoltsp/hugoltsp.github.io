@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Hugo Leonardo Teles">
+    <meta name="description" content="Hugo&#39;s personal tech blog">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mocking a AWS environment with LocalStack"/>
+<meta name="twitter:description" content="Test your AWS code locally"/>
+
+    <meta property="og:title" content="Mocking a AWS environment with LocalStack" />
+<meta property="og:description" content="Test your AWS code locally" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugoltsp.github.io/posts/localstack/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-07T12:41:07-03:00" />
+<meta property="article:modified_time" content="2021-07-07T12:41:07-03:00" />
+
+
+
+    
+      <base href="https://hugoltsp.github.io/posts/localstack/">
+    
+    <title>
+  Mocking a AWS environment with LocalStack · Hugo Leonardo
+</title>
+
+    
+      <link rel="canonical" href="https://hugoltsp.github.io/posts/localstack/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://hugoltsp.github.io/css/coder.min.28d751104f30c16da1aa1bb04015cbe662cacfe0d1b01af4f2240ad58580069c.css" integrity="sha256-KNdREE8wwW2hqhuwQBXL5mLKz&#43;DRsBr08iQK1YWABpw=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+    
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://hugoltsp.github.io/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.85.0" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://hugoltsp.github.io/">
+      Hugo Leonardo
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://hugoltsp.github.io/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Mocking a AWS environment with LocalStack</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2021-07-07T12:41:07-03:00'>
+                July 7, 2021
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              3 minutes read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        <p>When building cloud applications with AWS, we go through many vendor specific services such as S3, SQS, KMS and DynamoDB as well as many others, and for those to work properly we need credentials, IAM permissions and such, so it basically entails using your production environment or even building another one from the ground up, which sometimes is neither cheap or easy, one might lack the skills to do such thing or simply doesn&rsquo;t have resources to do this on their own, not to mention that competing the same services and objects with others might be a nuisance (think of shared SNS topics or SQS queues, for example).</p>
+<h3 id="what-is-localstack-about">What is LocalStack about?</h3>
+<p>LocalStack is an open-source AWS mocking tool written in Python, it provides an API akin to the real AWS cloud environment through its own HTTP endpoint. You can install LocalStack through python&rsquo;s pip package manager, but for sake of simplicity we will use Docker to make things much easier. If you&rsquo;d like to know more, take a look at the project <a href="https://github.com/localstack/localstack">GitHub page</a></p>
+<h6 id="a-localstack-docker-compose-setup-might-look-like-this">A LocalStack Docker Compose setup might look like this:</h6>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="font-weight:bold">version</span>: <span style="font-style:italic">&#39;3.3&#39;</span>
+
+<span style="font-weight:bold">services</span>:
+
+  <span style="font-weight:bold">localstack</span>:
+    <span style="font-weight:bold">image</span>: localstack/localstack:0.12.11
+    <span style="font-weight:bold">ports</span>:
+      - 4566:4566
+    <span style="font-weight:bold">environment</span>:
+      - SERVICES=s3,sqs,sns             <span style="font-style:italic">#list of services to be mocked</span>
+      - DEFAULT_REGION=sa-east-1        <span style="font-style:italic">#AWS region</span>
+      - AWS_ACCESS_KEY_ID=hugoltsp      <span style="font-style:italic">#access key for authentication</span>
+      - AWS_SECRET_ACCESS_KEY=hugoltsp  <span style="font-style:italic">#secret key for authentication</span>
+      - DATA_DIR=/tmp/localstack/data   <span style="font-style:italic">#container directory. enables persistence</span>
+    <span style="font-weight:bold">volumes</span>:
+      - ./setup/init.sh:/docker-entrypoint-initaws.d/setup.sh <span style="font-style:italic">#initialization code. more on that later :)</span>
+      - ./data:/tmp/localstack/data <span style="font-style:italic">#simple volume so you don&#39;t lose your data</span>
+    <span style="font-weight:bold">networks</span>:
+      - local
+      
+<span style="font-weight:bold">networks</span>:
+    local:</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="localstack-aws-cli">LocalStack AWS CLI</h3>
+<p>For this example we&rsquo;ll use <a href="https://github.com/localstack/awscli-local">awscli-local</a> which is a simple wrapper that has the same commands present in the <a href="https://aws.amazon.com/pt/cli/">official aws-cli</a>, the difference is that it points to a local endpoint on every command out of the box so no need to override a command&rsquo;s default URL every time with the <code>--endpoint-url</code>. As with LocalStack, you can install it on your machine via <code>pip</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">pip install awscli-local
+</code></pre></div><p>Alternatively you can use a CLI profile in your installed aws-cli to issue commands against LocalStack, or even create a shell script with a dockerized version of the official AWS CLI image pointing to your LocalStack host by default, for instance:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="">#!/bin/bash
+</span><span style=""></span>
+<span style="font-weight:bold">if</span> [ $# -eq 0 ]
+  <span style="font-weight:bold">then</span>
+    cmd=<span style="font-style:italic">&#39;help&#39;</span>
+  <span style="font-weight:bold">else</span>
+    cmd=$@
+<span style="font-weight:bold">fi</span>
+
+docker run -e AWS_ACCESS_KEY_ID=<span style="font-style:italic">&#39;hugoltsp&#39;</span> <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> -e AWS_SECRET_ACCESS_KEY=<span style="font-style:italic">&#39;hugoltsp&#39;</span> <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> -e AWS_DEFAULT_OUTPUT=<span style="font-style:italic">&#39;json&#39;</span> <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> -e AWS_DEFAULT_REGION=<span style="font-style:italic">&#39;sa-east-1&#39;</span> <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> --network localstackdemo_local <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> --rm -it amazon/aws-cli:2.2.5 <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span> --endpoint-url=http://localstack:4566 $cmd
+</code></pre></div><h3 id="initialization-code">Initialization Code</h3>
+<p>As mentioned earlier, it is possible to add initialization commands such as S3 buckets creation and others to your instance through the <code>/docker-entrypoint-initaws.d/setup.sh</code> entry, that&rsquo;s possible because LocalStack&rsquo;s default Docker image comes bundled with <code>awscli-local</code>. As soon as our chosen services are ready, it will execute any commands present on this file sequentially.</p>
+<p>For example, the following code creates a few SQS queues, a single S3 bucket, a couple of SNS topics and their subscriptions:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">
+<span style="font-style:italic"># SQS</span>
+
+awslocal sqs create-queue <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--queue-name invoice-notification-mobile-dlq <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--region sa-east-1
+
+awslocal sqs create-queue <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--queue-name invoice-notification-mobile <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--region sa-east-1 <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--attributes <span style="font-style:italic">&#39;{
+</span><span style="font-style:italic">  &#34;RedrivePolicy&#34;: &#34;{\&#34;deadLetterTargetArn\&#34;:\&#34;arn:aws:sqs:sa-east-1:000000000000:invoice-notification-mobile-dlq\&#34;,\&#34;maxReceiveCount\&#34;:\&#34;2\&#34;}&#34;,
+</span><span style="font-style:italic">  &#34;MessageRetentionPeriod&#34;: &#34;259200&#34;,
+</span><span style="font-style:italic">  &#34;VisibilityTimeout&#34;: &#34;90&#34;
+</span><span style="font-style:italic">}&#39;</span>
+
+awslocal sqs create-queue <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--queue-name invoice-notification-email-dlq <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--region sa-east-1
+
+awslocal sqs create-queue <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--queue-name invoice-notification-email <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--region sa-east-1 <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--attributes <span style="font-style:italic">&#39;{
+</span><span style="font-style:italic">  &#34;RedrivePolicy&#34;: &#34;{\&#34;deadLetterTargetArn\&#34;:\&#34;arn:aws:sqs:sa-east-1:000000000000:invoice-notification-email-dlq\&#34;,\&#34;maxReceiveCount\&#34;:\&#34;2\&#34;}&#34;,
+</span><span style="font-style:italic">  &#34;MessageRetentionPeriod&#34;: &#34;259200&#34;,
+</span><span style="font-style:italic">  &#34;VisibilityTimeout&#34;: &#34;90&#34;
+</span><span style="font-style:italic">}&#39;</span>
+
+<span style="font-style:italic"># SNS</span>
+
+awslocal sns create-topic <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--name invoice-notification
+
+awslocal sns subscribe <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--topic-arn arn:aws:sns:sa-east-1:000000000000:invoice-notification <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--protocol sqs <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--notification-endpoint http://127.0.0.1:4566/000000000000/invoice-notification-mobile <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--attributes <span style="font-style:italic">&#39;{
+</span><span style="font-style:italic">&#34;FilterPolicy&#34;: &#34;{\&#34;origin\&#34;: [\&#34;MOBILE\&#34;]}&#34;
+</span><span style="font-style:italic">}&#39;</span>
+
+awslocal sns subscribe <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--topic-arn arn:aws:sns:sa-east-1:000000000000:invoice-notification <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--protocol sqs <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--notification-endpoint http://127.0.0.1:4566/000000000000/invoice-notification-email <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--attributes <span style="font-style:italic">&#39;{
+</span><span style="font-style:italic">&#34;FilterPolicy&#34;: &#34;{\&#34;origin\&#34;: [\&#34;EMAIL\&#34;]}&#34;
+</span><span style="font-style:italic">}&#39;</span>
+
+
+<span style="font-style:italic"># S3</span>
+
+awslocal s3 mb s3://invoices <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>--region sa-east-1
+
+</code></pre></div><h3 id="more">More</h3>
+<ul>
+<li><a href="https://github.com/localstack/localstack">Official GitHub page;</a></li>
+<li><a href="https://hub.docker.com/r/localstack/localstack">Official DockerHub page;</a></li>
+<li><a href="https://github.com/localstack/localstack-java-utils">JUnit integration;</a></li>
+<li><a href="https://www.testcontainers.org/modules/localstack/">Testcontainer module;</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/guides/custom-service-endpoints#localstack">Working with Terraform;</a></li>
+<li><a href="https://github.com/hugoltsp/localstack-demo">Source code of this demo on GitHub.</a></li>
+</ul>
+
+      </div>
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Welcome ;)</p>
+    
+     © 2021
+    
+       · 
+      Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>
