@@ -8,7 +8,7 @@
     <language>en</language>
     <lastBuildDate>Wed, 07 Jul 2021 12:41:07 -0300</lastBuildDate><atom:link href="https://hugoltsp.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Mocking a AWS environment with LocalStack</title>
+      <title>Mocking AWS services with LocalStack</title>
       <link>https://hugoltsp.github.io/posts/localstack/</link>
       <pubDate>Wed, 07 Jul 2021 12:41:07 -0300</pubDate>
       
